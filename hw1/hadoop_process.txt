@@ -1,0 +1,23 @@
+// pull docker package
+docker pull sequenceiq/hadoop-docker:2.7.1
+
+// initialize docker 
+docker run -v /Users/Wenonah/Desktop/cs181/hw1:/mnt/cs181 -it sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash
+
+// should be inside bash
+cd /usr/local/hadoop
+export HADOOP_HOME=/usr/local/hadoop
+
+// make data directory and move our data into the folder
+$HADOOP_HOME/bin/hadoop jar /mnt/cs181/WordCount/target/WordCount-0.0.1-SNAPSHOT.jar cs181.WordCount data/* wordcount_output
+$HADOOP_HOME/bin/hdfs dfs -mkdir data
+$HADOOP_HOME/bin/hdfs dfs -put /mnt/cs181/HuckleberryFinn.txt data/HuckleberryFinn.txt
+
+// run mapreduce
+$HADOOP_HOME/bin/hadoop jar /mnt/cs181/WordCount/target/WordCount-0.0.1-SNAPSHOT.jar cs181.WordCount data/* wordcount_output
+
+// output 
+$HADOOP_HOME/bin/hdfs dfs -ls wordcount_output/*
+
+// did something and print in console
+$HADOOP_HOME/bin/hdfs dfs -text wordcount_output/part-r-00000
