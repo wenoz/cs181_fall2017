@@ -1,0 +1,17 @@
+//'mounting' the HW2 folder
+docker run -v /Users/Wenonah/Desktop/cs181/hw2:/mnt/cs181 -it sequenceiq/hadoop-docker:2.7.1 /etc/bootstrap.sh -bash
+
+// copy the input files onto the distributed file system
+export HADOOP_HOME=/usr/local/hadoop 
+$HADOOP_HOME/bin/hdfs dfs -mkdir data
+$HADOOP_HOME/bin/hdfs dfs -put /mnt/cs181/pageRank/web-Stanford_M.txt data/ 
+$HADOOP_HOME/bin/hdfs dfs -put /mnt/cs181/pageRank/web-Stanford_V.txt data/
+
+// package jar and lauch 
+// one iter
+$HADOOP_HOME/bin/hadoop jar /mnt/cs181/pageRank/target/PageRank-0.0.1-SNAPSHOT.jar cs181.PageRank 1 data/web-Stanford_M.txt data/web-Stanford_V.txt
+// two iter
+$HADOOP_HOME/bin/hadoop jar /mnt/cs181/pageRank/target/PageRank-0.0.1-SNAPSHOT.jar cs181.PageRank 2 data/web-Stanford_M.txt data/web-Stanford_V.txt
+
+// cat result 
+$HADOOP_HOME/bin/hdfs dfs -text data/web-Stanford_V.txt/*
